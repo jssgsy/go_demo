@@ -7,14 +7,14 @@ import (
 
 //这种写法主要用于声明包级别的全局变量，当你在函数体内声明局部变量时，应使用简短声明语法 :=
 var (
-	HOME = os.Getenv("HOME")
-	USER = os.Getenv("USER")
+	HOME   = os.Getenv("HOME")
+	USER   = os.Getenv("USER")
 	GOROOT = os.Getenv("GOROOT")
 )
 
 /*
  左大括号 { 必须与方法的声明放在同一行，这是编译器的强制规定，否则报错
- */
+*/
 func fn() {
 	fmt.Println("首字母为小写相当于private，不能被外部引用")
 }
@@ -22,6 +22,7 @@ func fn() {
 func Fn2() {
 	fmt.Println("首字母为大写相当于public，可以被外部引用")
 }
+
 //------------------------------------------------------------------------
 
 // 全局变量允许声明但不使用,局部变量必须要被使用到
@@ -29,8 +30,8 @@ var g int
 
 /**
 变量定义
- */
-func Var_definition()  {
+*/
+func Var_definition() {
 	// 变量,类型在后
 	// 变量的命名规则遵循骆驼命名法，即首个单词小写，每个新单词的首字母大写，例如：numShips 和 startDate
 	var i int = 1
@@ -41,14 +42,20 @@ func Var_definition()  {
 	j := i
 	fmt.Println(j)
 
+	// 变量重声明，只有:=的形式可以，且必须有多个变量的情况下才可以
+	// j := 4;//这是错误的
+	e, j := 4, 9
+	fmt.Println(e)
+	fmt.Println(j)
+
 	// 可省略类型，只要此时可以推断出变量的值推断出变量的类型
 	var k = 3
 	fmt.Println(k)
 
 	/*
-	常量定义
-	常量的值必须是能够在编译时就能够确定的；你可以在其赋值表达式中涉及计算过程，但是所有用于计算的值必须在编译期间就能获得(不能是需要动态计算才能获取的)
-	  */
+		常量定义
+		常量的值必须是能够在编译时就能够确定的；你可以在其赋值表达式中涉及计算过程，但是所有用于计算的值必须在编译期间就能获得(不能是需要动态计算才能获取的)
+	*/
 	const pi int = 12
 	const pi2 = 34
 
@@ -65,23 +72,23 @@ func Var_definition()  {
 	//fmt.Println(_)
 
 	// 并行赋值，并行赋值也被用于当一个函数返回多个返回值时
-	a,b := 1,2
+	a, b := 1, 2
 	fmt.Println(a)
 	fmt.Println(b)
 }
+
 //------------------------------------------------------------------------
 
 /**
 三种格式的输出
- */
-func basic_print()  {
+*/
+func basic_print() {
 	// 换行输出
 	fmt.Println("the basic print expression two ")
 
 	fmt.Print("the basic print expression one ")
-	fmt.Printf("the basic print expression %s","three")
+	fmt.Printf("the basic print expression %s", "three")
 	fmt.Println()
 }
+
 //------------------------------------------------------------------------
-
-
