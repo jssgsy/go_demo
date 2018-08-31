@@ -95,7 +95,7 @@ func TestDefer(t *testing.T) {
 */
 func deferFunc() {
 	fmt.Println("entering deferFunc")
-	// 注意语法
+	// 注意语法,这是一个闭包(匿名函数)，最后的一对括号表示对该匿名函数的调用
 	defer func() {
 		fmt.Println("这是在return前一刻执行的")
 	}()
@@ -107,17 +107,32 @@ func deferFunc() {
 测试将函数作为参数传递
 */
 func TestCallback(t *testing.T) {
-	callbackFn(1, callback)
+	callbackFn(1, func(x int) int {
+		return x + 10
+	})
 }
 
 /*
 将参数作为参数传递
 */
-func callbackFn(i int, fn func(x int) int) {
+func callbackFn(i int, fn func(int) int) {
 	fmt.Println(fn(i))
-}
-func callback(x int) int {
-	return x + 10
 }
 
 //----------------------------------------------------------------------
+
+/*
+闭包(匿名)函数的测试，闭包经常和defer一起使用
+*/
+func TestAnonyouFunc(t *testing.T) {
+	k := 30
+	// 1.1 匿名函数直接调用
+	// 1.2 匿名函数可以引用其外部的变量
+	func(i, j int) {
+		fmt.Println(i + j + k)
+	}(10, 20)
+
+	// 2. 匿名函数赋值给变量，通过变量调用
+	fn := func(i, j int) int { return i + j }
+	fmt.Println(fn(10, 20))
+}
