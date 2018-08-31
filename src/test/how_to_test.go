@@ -143,6 +143,36 @@ func TestAnonyouFunc(t *testing.T) {
 //----------------------------------------------------------------------
 
 /*
+测试指针
+Go 语言和 C、C++ 以及 D 语言这些低级（系统）语言一样，都有指针的概念。
+但是对于经常导致 C 语言内存泄漏继而程序崩溃的指针运算（所谓的指针算法，如：pointer+2，移动指针指向字符串的字节数或数组的某个位置）是不被允许的。
+Go 语言中的指针保证了内存安全，更像是 Java、C# 和 VB.NET 中的引用
+指针的一个高级应用是你可以传递一个变量的引用（如函数的参数），这样不会传递变量的拷贝。指针传递是很廉价的
+*/
+func TestPoint(t *testing.T) {
+	i := 1
+	j := &i
+	fmt.Println("指针的值为：", j, "指针的类型为：", reflect.TypeOf(j)) // 0xc4200961b0, *int
+	fmt.Println("指针指向的内容为：", *j)                           // 1
+
+	var p *int
+	// 两者类型不一致，不能赋值
+	//p = i
+	// 两者类型一致，可赋值
+	p = j
+	// 此时修改会反映到j指向的内容上上
+	*p = 3
+	fmt.Println(*j)
+
+	// 不能得到一个文字或常量的地址
+	const n = 7
+	//fmt.Println(&n)	// Cannot take the address of 'n'
+	//fmt.Println(&10)	// Cannot take the address of 'n'
+}
+
+//----------------------------------------------------------------------
+
+/*
 测试slice结构
 */
 func TestSlice(t *testing.T) {
