@@ -3,6 +3,7 @@ package test
 //1. 必须引入testing包
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -25,6 +26,8 @@ func TestDemo2(t *testing.T) {
 		t.Error("测试失败了")
 	}
 }
+
+//----------------------------------------------------------------------
 
 /**
 测试条件表示式
@@ -136,3 +139,54 @@ func TestAnonyouFunc(t *testing.T) {
 	fn := func(i, j int) int { return i + j }
 	fmt.Println(fn(10, 20))
 }
+
+//----------------------------------------------------------------------
+
+/*
+测试slice结构
+*/
+func TestSlice(t *testing.T) {
+	// 定义一个数组
+	var arr = []int{1, 3, 4, 6, 7, 9}
+	fmt.Println("最原始的数组：", arr) //[1 3 4 6 7 9]
+	// 数组当然也是一个slice
+	fmt.Println("数组容量：", cap(arr)) //6
+
+	// 从数组中获取一个slice，左闭右开
+	var slice1 = arr[2:5]
+	fmt.Println("slice1大小：", len(slice1)) // 3
+
+	// 容量是向右扩展到极限时的大小
+	fmt.Println("slice1容量：", cap(slice1)) // 4
+
+	// 注意，slice只是原数组的一段区间的引用，所以的这里的变化会反应到原数组上
+	slice1[0] = 100
+	fmt.Println("slice1: ", slice1) // [100 6 7]
+	fmt.Println("arr: ", arr)       // [1 3 100 6 7 9]
+
+	// slice就是一个小数组，所以可以使用for与for-range等
+	for i := 0; i < len(slice1); i++ {
+		fmt.Println(slice1[i])
+	}
+
+	for key, value := range slice1 {
+		fmt.Println("slice1 key: ", key, " slice1 value: ", value)
+	}
+
+	// 数组定义,此时索引仍然会从0开始补齐，没赋值索引处的值会被置为相应类型的空值
+	var arr2 = []int{2: 222, 3: 333, 7: 777}
+	for key, value := range arr2 {
+		fmt.Println("arr2 key: ", key, " arr2 value: ", value)
+	}
+
+	// 注意，长度也是数组类型的一部分
+	var arr3 = [3]int{1, 2, 3}
+	var arr4 = []int{1, 2, 3}
+	var arr5 = new([4]int)
+	fmt.Println(reflect.TypeOf(arr3)) // [3]int
+	fmt.Println(reflect.TypeOf(arr4)) // []int
+	fmt.Println(reflect.TypeOf(arr5)) // *[4]int
+	fmt.Println(arr5)                 // &[0 0 0 0]
+}
+
+//----------------------------------------------------------------------
