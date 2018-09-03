@@ -133,7 +133,7 @@ func TestCallback(t *testing.T) {
 }
 
 /*
-将参数作为参数传递
+将函数作为参数传递
 */
 func callbackFn(i int, fn func(int) int) {
 	fmt.Println(fn(i))
@@ -234,6 +234,21 @@ func TestSlice(t *testing.T) {
 	fmt.Println(reflect.TypeOf(arr4)) // []int
 	fmt.Println(reflect.TypeOf(arr5)) // *[4]int
 	fmt.Println(arr5)                 // &[0 0 0 0]
+}
+
+//----------------------------------------------------------------------
+/**
+new与make的区别
+new(T)：为新的类型T分配一片内存，初始化为 0 并且返回类型为*T的内存地址：适用于值类型如数组和结构体;
+make(T)：返回一个类型为T的初始值，它只适用于3种内建的引用类型：切片、map 和 channel
+*/
+func TestNewMake(t *testing.T) {
+	n := new([]int)
+	m := make([]int, 3)
+	fmt.Println(n)
+	fmt.Println(reflect.TypeOf(n)) // *[]int
+	fmt.Println(m)
+	fmt.Println(reflect.TypeOf(m)) // []int
 }
 
 //----------------------------------------------------------------------
