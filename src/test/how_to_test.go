@@ -284,3 +284,54 @@ func TestNewMake(t *testing.T) {
 }
 
 //----------------------------------------------------------------------
+
+/*
+测试map
+1. map是引用类型 的：内存用 make 方法来分配,不要使用new，永远用make来构造map
+*/
+func TestMap(t *testing.T) {
+	// 此时只是声明了一个空map，尚不能往里添加元素
+	/*var m map[string]string
+	m["a"] = "aaa"
+	fmt.Println(m)*/
+
+	// 直接赋值
+	m1 := map[string]string{"a": "aaa", "b": "bbb"}
+	fmt.Println(m1)
+
+	m := make(map[string]string)
+	m["a"] = "aaa"
+	m["b"] = "bbb"
+	m["c"] = "ccc"
+	fmt.Println(m)                 //map[a:aaa b:bbb c:ccc]
+	fmt.Println(reflect.TypeOf(m)) // map[string]string
+
+	fmt.Println("map的key-value数量为：", len(m))
+
+	// 一般还是在知道大致key-value数量时指定map的容量，虽然map的容量是动态增长的
+	// m2 := make(map[int]string, 3)
+
+	// 判断某个key是否存在
+	value, isPresent := m["d"]
+	if isPresent {
+		fmt.Println(value)
+	} else {
+		fmt.Println("map m中不存在key d")
+	}
+
+	// 删除某个key，直接使用delete方法，即使不存在也不会报错
+	delete(m, "b")
+	fmt.Println(m) // map[a:aaa c:ccc]
+
+	// map遍历，使用for-range
+	for key, value := range m {
+		fmt.Println("key: ", key, " value: ", value)
+	}
+
+	// 注意下面的语法，只获取map的key
+	for key := range m {
+		fmt.Println(key)
+	}
+}
+
+//----------------------------------------------------------------------
