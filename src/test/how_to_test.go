@@ -236,11 +236,43 @@ func TestSlice(t *testing.T) {
 	fmt.Println(arr5)                 // &[0 0 0 0]
 }
 
+/**
+测试切片1
+*/
+func TestSlice1(t *testing.T) {
+	// 使用make来创建切片，这种方法可以用在还没有创建相关数组时，
+	// make方法签名：func make([]T, len, cap)，第二个参数是切片的len，第三个参数是切片的cap，即底层数组的len
+	var slice1 = make([]int, 3, 10)
+	fmt.Println("slice1", slice1)
+	fmt.Println("len(slice1): ", len(slice1))
+	fmt.Println("cap(slice1): ", cap(slice1))
+
+	for i := 0; i < cap(slice1); i++ {
+		slice1 = slice1[0 : i+1]
+		slice1[i] += 1
+
+	}
+	fmt.Println("重组后的slice1: ", slice1)
+
+	// 切片复制与追加
+	slice2 := []int{45, 23, 6, 1, 98, 3}
+	slice3 := []int{10, 20, 30}
+	// slice3是dest，slice2是src，相应处的元素会被覆盖,copy返回被复制的个数
+	n := copy(slice3, slice2)
+	fmt.Println("复制的元素个数为：", n)
+	fmt.Println(slice2)
+	fmt.Println(slice3)
+
+	// append返回扩容后的新切片
+	result := append(slice3, 9, 8, 7)
+	fmt.Println(result)
+}
+
 //----------------------------------------------------------------------
 /**
 new与make的区别
 new(T)：为新的类型T分配一片内存，初始化为 0 并且返回类型为*T的内存地址：适用于值类型如数组和结构体;
-make(T)：返回一个类型为T的初始值，它只适用于3种内建的引用类型：切片、map 和 channel
+func make([]T, len, cap)：返回一个类型为T的初始值，它只适用于3种内建的引用类型：切片、map 和 channel
 */
 func TestNewMake(t *testing.T) {
 	n := new([]int)
