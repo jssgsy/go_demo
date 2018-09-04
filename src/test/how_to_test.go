@@ -339,6 +339,7 @@ func TestMap(t *testing.T) {
 测试接口
 1. 结构体是值类型
 2. Go 语言中，结构体和它所包含的数据在内存中是以连续块的形式存在的
+3. 不能对结构体进行make操作，会引发编译错误，
 */
 func TestStruct(t *testing.T) {
 	// 给stu分配内存，并零值化内存，这个时候stu的类型是student
@@ -378,10 +379,32 @@ func TestStruct(t *testing.T) {
 	// stu6 := &student{age:40, address:[]string{"bbb"}, name:"stu6_name"}
 }
 
+// 注意，这里用的小写，则别的包没法调用
 type student struct {
 	name    string
 	age     int
 	address []string
+}
+
+/*
+使用工厂方法创建结构体实例
+1. 为了方便通常会为类型定义一个工厂，按惯例，工厂的名字以 new 或 New 开头
+2. 使用工厂方法，可以将struct定义成私有的(小写)，此时外部不能不能随便修改struct，然后提供工厂方法给外部包用；
+3. 注意，一个工厂方法返回的是指向结构体的指针
+*/
+func NewStudent(name string, age int, address []string) *student {
+	stu := new(student)
+	stu.name = name
+	stu.age = age
+	stu.address = address
+	return stu
+	//return &student{name, age, address}	// 用这句也可以
+}
+
+func TestFactoryStruct(t *testing.T) {
+	// 通过工厂方法获取结构体实例
+	stu := NewStudent("abc", 54, []string{"hubei", "xiamen"})
+	fmt.Println(stu) // &{abc 54 [hubei xiamen]}
 }
 
 //----------------------------------------------------------------------
