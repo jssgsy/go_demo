@@ -335,3 +335,53 @@ func TestMap(t *testing.T) {
 }
 
 //----------------------------------------------------------------------
+/*
+测试接口
+1. 结构体是值类型
+2. Go 语言中，结构体和它所包含的数据在内存中是以连续块的形式存在的
+*/
+func TestStruct(t *testing.T) {
+	// 给stu分配内存，并零值化内存，这个时候stu的类型是student
+	var stu student
+	stu.name = "stu_name"
+	stu.age = 20
+	stu.address = []string{"hubei", "zhejiang"}
+	fmt.Println(reflect.TypeOf(stu)) // test.student，注意，这里的test是包名，表示定义在test包下的student类型，即所谓的完整类型名
+	fmt.Println(stu)                 // {stu_name 20 [hubei zhejiang]}
+
+	var stu1 = stu
+	// 因为结构体是值类型，所以这里stu1的name的改动不会反应到stu上，当然，address[0]会反应到stu上
+	stu1.name = "new_stu_name"
+	stu1.address[0] = "new_hubei"
+	fmt.Println(stu1) // {new_stu_name 20 [new_hubei zhejiang]}
+	fmt.Println(stu)  // {stu_name 20 [new_hubei zhejiang]}
+
+	// 也会给相应字段赋零值，但变量stu2是一个指向student的指针
+	stu2 := new(student)
+	fmt.Println(reflect.TypeOf(stu2)) // *test.student，注意，这里的test是包名
+	stu2.address = []string{"aaa", "bbb"}
+	stu2.name = "stu2_name"
+	fmt.Println(stu2) // &{stu2_name 0 [aaa bbb]}
+
+	// 初始化结构体
+	stu3 := student{"stu3_name", 23, []string{"eeee", "ffff"}}
+	fmt.Println("stu3的类型为：", reflect.TypeOf(stu3)) // stu3的类型为： test.student
+	fmt.Println("stu3: ", stu3)                    // stu3:  {stu3_name 23 [eeee ffff]}
+
+	// 注意这里的&，底层还是有的new，所以这里是指针类型
+	stu4 := &student{"stu4_name", 3, []string{"eeee", "ffff"}}
+	fmt.Println("stu4的类型为：", reflect.TypeOf(stu4)) // stu4的类型为： *test.student
+	fmt.Println("stu4: ", stu4)                    // stu4:  &{stu4_name 3 [eeee ffff]}
+
+	// 也可以在初始化时不按照定义字段的顺序赋值，此时只需要显示指定字段即可
+	// stu5 := student{age:30, address:[]string{"aaa"}, name:"stu5_name"}
+	// stu6 := &student{age:40, address:[]string{"bbb"}, name:"stu6_name"}
+}
+
+type student struct {
+	name    string
+	age     int
+	address []string
+}
+
+//----------------------------------------------------------------------
