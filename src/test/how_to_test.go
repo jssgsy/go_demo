@@ -386,6 +386,8 @@ type student struct {
 	address []string
 }
 
+//----------------------------------------------------------------------
+
 /*
 使用工厂方法创建结构体实例
 1. 为了方便通常会为类型定义一个工厂，按惯例，工厂的名字以 new 或 New 开头
@@ -405,6 +407,45 @@ func TestFactoryStruct(t *testing.T) {
 	// 通过工厂方法获取结构体实例
 	stu := NewStudent("abc", 54, []string{"hubei", "xiamen"})
 	fmt.Println(stu) // &{abc 54 [hubei xiamen]}
+}
+
+//----------------------------------------------------------------------
+/*
+结构体中的匿名字段
+*/
+func TestAnonymousField(t *testing.T) {
+	a := new(A)
+	a.age = 12
+	a.name = "a_name"
+	fmt.Println(a) // &{12 a_name}
+
+	b := new(B)
+	b.name = "b->a->name"
+	// B本身有一个age字段，其中的A中也有一个age字段，外层名字会覆盖内层名字
+	b.age = 23.98
+
+	// 可直接访问内层结构体B中的字段
+	b.address = "hubie wuhan"
+	b.int = 40
+	b.string = "blabla"
+
+	fmt.Println(b) // &{40 blabla 23 {0 b->a->name hubie wuhan}}
+
+	// 可通过A.age来访问内部的age字段
+	b.A.age = 46
+	fmt.Println(b) // &{40 blabla 23.98 {46 b->a->name hubie wuhan}}
+}
+
+type A struct {
+	age     int
+	name    string
+	address string
+}
+type B struct {
+	int // 此时类型就是字段的名字
+	string
+	age float32
+	A   // 结构体类型也可以作为匿名字段
 }
 
 //----------------------------------------------------------------------
