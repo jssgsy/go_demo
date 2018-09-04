@@ -450,3 +450,46 @@ type B struct {
 }
 
 //----------------------------------------------------------------------
+
+/**
+测试方法
+func (recv receiver_type) methodName(parameter_list) (return_value_list) { ... }
+由上面的结构体定义可知，并没有为结构体定义相关的方法，因为：方法没有和数据定义（结构体）混在一起：它们是正交的类型；表示（数据）和行为（方法）是独立的，重要
+*/
+func TestMethod(t *testing.T) {
+	d := new(demo)
+	d.name = "d_name"
+	fmt.Println(d.fn())         // d_name____
+	fmt.Println(d.fn1("hello")) // hellod_name____
+
+	//arr := []int{1,2,3,4,5}	// 此时arr.fn2()不能调用，因为
+	arr := IntArr{1, 2, 3, 4, 5}
+	fmt.Println(arr.fn2()) // 15
+
+}
+
+type demo struct {
+	name string
+	age  int
+}
+
+// 为类型(这里的结构体)定义(添加)两个方法，其中d是所谓的接收者，其类型为demo，其实背后的意思就是，为demo类型的结构体定义两个方法
+func (d demo) fn() string {
+	return d.name + "____"
+}
+func (d demo) fn1(str string) string {
+	return str + d.name + "____"
+}
+
+// 为类型IntArr定义(添加)一个方法，注意：方法只在这个别名类型上有效，即此时IntArr上有fn2方法，但[]int是没有这个方法的
+type IntArr []int
+
+func (i IntArr) fn2() int {
+	sum := 0
+	for _, value := range i {
+		sum += value
+	}
+	return sum
+}
+
+//----------------------------------------------------------------------
