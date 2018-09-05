@@ -493,3 +493,45 @@ func (i IntArr) fn2() int {
 }
 
 //----------------------------------------------------------------------
+
+/*
+测试通道
+1. 通道就像一个缓冲区，且是FIFO的；
+2. 通道是引用类型，用make进行初始化;
+*/
+func TestChannel(t *testing.T) {
+	// 第二个元素是通道的容量，而通道的大小(长度)就是其中元素的个数，chan是表示通道的关键字
+	ch := make(chan int, 3)
+	fmt.Println("len(ch): ", len(ch)) // len(ch):  0
+	fmt.Println("cap(ch): ", cap(ch)) // cap(ch):  3
+	fmt.Println("ch本身: ", ch)         // ch本身:  0xc4200a4180，通道是引用类型
+	// 往通道(缓冲区)加入元素
+	ch <- 1
+	ch <- 2
+	ch <- 3
+	//ch <- 4 // 此句出错，容量已满
+
+	// 从通道(缓冲区)中取数据，注意通道FIFO的性质；
+	i := <-ch
+	fmt.Println(i)
+
+	// 下面看下元素的进出是“浅复制”还是“深复制”
+	i = 100
+	fmt.Println("ch本身：", ch) // ch本身： 0xc4200b4180
+
+	ch1 := make(chan []int, 4)
+	arr := []int{1, 2, 3, 4, 5, 6, 7, 8}
+	slice1 := arr[0:2]
+	ch1 <- slice1
+	ch1 <- arr[2:4]
+	ch1 <- arr[4:6]
+	fmt.Println("slice1:", slice1) // slice1: [1 2]
+	fmt.Println("ch1:", ch1)       // ch1: 0xc4200aa0c0
+
+	arr2 := <-ch1
+	arr2[0] = 100
+	fmt.Println("slice1_again:", slice1) // slice1_again: [100 2]，由此可知，如果元素本身是引用类型，则元素的收发是“深拷贝”，即收发前后的元素指向同一块内存空间
+	fmt.Println("ch1_again:", ch1)       // ch1_again: 0xc4200aa0c0
+}
+
+//----------------------------------------------------------------------
