@@ -584,3 +584,44 @@ func (c circle) area() int {
 }
 
 //----------------------------------------------------------------------
+func TestNestedInterface(t *testing.T) {
+	impl := Implemen{10}
+	// 如果cc没有同时实现aFn，bFn，cFn方法，则下面赋值语句是错误和，这和java中一样，“实现类必须实现接口中的所有方法”
+	var c cc = impl
+	fmt.Println("c.aFn():", c.aFn()) // c.aFn(): afn
+	fmt.Println("c.bFn():", c.bFn()) // c.bFn(): 10
+	fmt.Println("c.cFn():", c.cFn()) // c.cFn(): [1 2 3]
+
+}
+
+// 接口嵌套接口, 相当于直接将这些内嵌接口的方法列举在外层接口中一样
+type a interface {
+	aFn() string
+}
+type b interface {
+	bFn() int
+}
+
+// 此时接口c同时有了aFn,bFn,cFn三个方法
+type cc interface {
+	// 接口嵌套
+	a
+	b
+	cFn() []int
+}
+
+type Implemen struct {
+	age int
+}
+
+func (impl Implemen) aFn() string {
+	return "afn"
+}
+func (impl Implemen) bFn() int {
+	return impl.age
+}
+func (impl Implemen) cFn() []int {
+	return []int{1, 2, 3}
+}
+
+//----------------------------------------------------------------------
