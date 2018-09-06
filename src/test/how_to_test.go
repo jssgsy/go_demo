@@ -625,3 +625,45 @@ func (impl Implemen) cFn() []int {
 }
 
 //----------------------------------------------------------------------
+/*
+测试接口类型在运行时的实际类型
+*/
+func TestInterfaceType(t *testing.T) {
+	imp := new(aa_imp)
+	var a aa = imp
+	if t, ok := a.(aa_imp); ok {
+		fmt.Println("if中，接口a运行时的类型为：", t)
+	} else {
+		fmt.Println("类型没有匹配上") // 类型没有匹配上
+	}
+
+	// 注意这里和上面的区别
+	bImp := new(bb_imp)
+	a = bImp
+	// bb_imp前有*号，所以匹配上了，对接口类型理解还不够深刻
+	if t, ok := a.(*bb_imp); ok {
+		fmt.Println("if中，接口a运行时的类型为：", t) // if中，接口a运行时的类型为： &{}
+	} else {
+		fmt.Println("类型没有匹配上")
+	}
+}
+
+type aa interface {
+	aaFn() int
+}
+type aa_imp struct {
+}
+
+// 实现接口
+func (imp aa_imp) aaFn() int {
+	return 10
+}
+
+type bb_imp struct {
+}
+
+func (imp *bb_imp) aaFn() int {
+	return 10
+}
+
+//----------------------------------------------------------------------
