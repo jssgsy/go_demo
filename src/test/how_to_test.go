@@ -535,3 +535,52 @@ func TestChannel(t *testing.T) {
 }
 
 //----------------------------------------------------------------------
+
+func TestInterface(t *testing.T) {
+	s := new(square)
+	s.width = 10
+	s.height = 10
+	// 接口类型的变量可以接收所有其实现类型的变量，和java中一样
+	var shaper Shaper = s
+	fmt.Println("正方形的面积为：", shaper.area()) // 正方形的面积为： 100
+
+	c := circle{10}
+	shaper = c
+	fmt.Println("圆形的面积为：", shaper.area()) // 圆形的面积为： 300
+}
+
+/*
+定义接口
+1. 按照约定，只包含一个方法的接口的名字由方法名加 [e]r 后缀组成，例如 Printer、Reader、Writer、Logger、Converter 等等
+2. 有一些不常用的方式（当后缀er不合适时），此时接口名以able结尾，比如Recoverable，或者以 I 开头（像 .NET 或 Java 中那样）
+3. Go语言中的接口都很简短，通常它们会包含0个、最多3个方法。
+*/
+type Shaper interface {
+	// 定义一个方法，空方法
+	area() int
+}
+
+// 正方形
+type square struct {
+	height, width int
+}
+
+// 实现Shaper接口，其实就是通过方法的形式
+func (s square) area() int {
+	return s.height * s.width
+}
+
+// 下面的定义在编译期是ok的，只是square添加了一个带参加的area方法，而不是实现了接口Shaper中的方法，所以运行上面的TestInterface方法时会在运行期会报错
+/*func (s square) area(i int) int {
+	return s.height * s.width
+}*/
+
+type circle struct {
+	radius int
+}
+
+func (c circle) area() int {
+	return c.radius * c.radius * 3
+}
+
+//----------------------------------------------------------------------
