@@ -667,3 +667,28 @@ func (imp *bb_imp) aaFn() int {
 }
 
 //----------------------------------------------------------------------
+/*
+type-switch
+*/
+func TestTypeSwitch(t *testing.T) {
+	aImpl := new(aa_imp)
+	var a aa = aImpl
+
+	// 注意，这里的type是关键字
+	switch t := a.(type) {
+	case *aa_imp:
+		fmt.Println("*aa_imp，t的类型为：", t) // *aa_imp，t的类型为： &{}
+	case *bb_imp:
+		fmt.Println("*bb_imp，t的类型为：", t)
+	default:
+		fmt.Println("t的类型未知")
+	}
+
+	// 如果仅仅是测试变量的类型，不用它的值，那么就可以不需要赋值语句
+	/*switch a.(type) {
+	case :
+	case :
+	}*/
+}
+
+//----------------------------------------------------------------------
