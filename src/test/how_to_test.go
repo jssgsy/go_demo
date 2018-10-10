@@ -504,7 +504,6 @@ func TestMethod(t *testing.T) {
 	//arr := []int{1,2,3,4,5}	// 此时arr.fn2()不能调用，因为
 	arr := IntArr{1, 2, 3, 4, 5}
 	fmt.Println(arr.fn2()) // 15
-
 }
 
 type demo struct {
@@ -529,6 +528,19 @@ func (i IntArr) fn2() int {
 		sum += value
 	}
 	return sum
+}
+
+/**
+1. 鉴于性能的原因，recv 最常见的是一个指向receiver_type的指针
+2. receiver_type(或者*receiver_type)实现了某个方法，则receiver_type(或者*receiver_type)类型的变量均可调用此方法
+*/
+func TestMethod2(t *testing.T) {
+	// demo类型定义了fn方法，则demo类型与demo的指针类型均可调用此方法
+	var d demo = demo{"name", 28}
+	d.fn()
+
+	var d1 *demo = new(demo)
+	d1.fn()
 }
 
 //----------------------------------------------------------------------
