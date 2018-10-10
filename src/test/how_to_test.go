@@ -422,7 +422,7 @@ func TestStruct(t *testing.T) {
 type student struct {
 	name    string
 	age     int
-	address []string
+	address []string // 注意，这是切片类型(引用)，而不是数组类型(值)
 }
 
 //----------------------------------------------------------------------
@@ -469,7 +469,7 @@ func TestAnonymousField(t *testing.T) {
 	b.int = 40
 	b.string = "blabla"
 
-	fmt.Println(b) // &{40 blabla 23 {0 b->a->name hubie wuhan}}
+	fmt.Println(b) // &{40 blabla 23.98 {0 b->a->name hubie wuhan}}
 
 	// 可通过A.age来访问内部的age字段
 	b.A.age = 46
@@ -604,12 +604,12 @@ type square struct {
 	height, width int
 }
 
-// 实现Shaper接口，其实就是通过方法的形式
+// 实现Shaper接口，其实就是通过方法的形式，方法名+形参+返回值(类型)
 func (s square) area() int {
 	return s.height * s.width
 }
 
-// 下面的定义在编译期是ok的，只是square添加了一个带参加的area方法，而不是实现了接口Shaper中的方法，所以运行上面的TestInterface方法时会在运行期会报错
+// 下面的定义在编译期是ok的，只是square添加了一个带参数的area方法，而不是实现了接口Shaper中的方法，所以运行上面的TestInterface方法时会在运行期会报错
 /*func (s square) area(i int) int {
 	return s.height * s.width
 }*/
@@ -633,7 +633,7 @@ func TestNestedInterface(t *testing.T) {
 
 }
 
-// 接口嵌套接口, 相当于直接将这些内嵌接口的方法列举在外层接口中一样
+// 接口嵌套接口, 相当于直接	将这些内嵌接口的方法列举在外层接口中一样
 type a interface {
 	aFn() string
 }
@@ -733,17 +733,28 @@ func TestTypeSwitch(t *testing.T) {
 
 //----------------------------------------------------------------------
 /**
-测试某个变量所属的类型是否实现了某个接口
+测试 判断运行时在变量中存储的值的实际类型
 */
 func TestInterface2(t *testing.T) {
 
-	imp := new(aa_imp)
+	imp := aa_imp{}
 	var a aa = imp
-	if t, ok := a.(aa); ok {
+	// 运行时接口类型的变量a的实际值的类型是不是aa_imp
+	if t, ok := a.(aa_imp); ok {
 		fmt.Println("if中，接口a运行时的类型为：", t)
 	} else {
 		fmt.Println("类型没有匹配上") // 类型没有匹配上
 	}
+
+	imp1 := new(aa_imp)
+	a = imp1
+	// 运行时接口类型的变量a的实际值的类型是不是*aa_imp
+	if t, ok := a.(*aa_imp); ok {
+		fmt.Println("if中，接口a运行时的类型为：", t)
+	} else {
+		fmt.Println("类型没有匹配上") // 类型没有匹配上
+	}
+
 }
 
 //----------------------------------------------------------------------
