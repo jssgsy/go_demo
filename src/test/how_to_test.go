@@ -189,8 +189,45 @@ func TestPoint(t *testing.T) {
 
 //----------------------------------------------------------------------
 
+/**
+测试数组
+1. 数组是值类型！
+*/
+func TestArr(t *testing.T) {
+	// 数组定义时必须指定长度，因为数组是定长
+	arr := [3]int{1, 2, 3}
+	fmt.Println(arr) // [1 2 3]
+
+	arr1 := arr
+	// 因为数组是值类型，所有arr1的修改不会反应到arr上，即数组赋值时，会发生数组内存的拷贝
+	arr1[0] = 10
+	fmt.Println(arr1) // [10 2 3]
+	fmt.Println(arr)  // [1 2 3]
+
+	// 如果要arr1的修改能反应到arr上，
+	// 1. 可用&进行引用，常用在函数参数中；
+	arrRefer(&arr)
+	fmt.Println(arr) // [10 2 3]
+
+	// 2. 生成数组切片并将其传递给函数
+	arrSlice(arr[:])
+	fmt.Println(arr) // [10 2 3]
+}
+
+// 注意这里的语法，*[3]int表示是一个长度为3的数组的引用
+func arrRefer(arr *[3]int) {
+	arr[0] = 10
+}
+func arrSlice(arr []int) {
+	arr[0] = 10
+}
+
+//----------------------------------------------------------------------
+
 /*
 测试slice结构
+1. 切片（slice）是对数组一个连续片段的引用：所以切片是一个引用类型;
+2. 和数组不同的是，切片的长度可以在运行时修改：切片是一个长度可变的数组
 */
 func TestSlice(t *testing.T) {
 	// 定义一个数组
@@ -227,8 +264,8 @@ func TestSlice(t *testing.T) {
 	}
 
 	// 注意，长度也是数组类型的一部分
-	var arr3 = [3]int{1, 2, 3}
-	var arr4 = []int{1, 2, 3}
+	var arr3 = [3]int{1, 2, 3} // 这是一个数组
+	var arr4 = []int{1, 2, 3}  // 这是一个切片
 	var arr5 = new([4]int)
 	fmt.Println(reflect.TypeOf(arr3)) // [3]int
 	fmt.Println(reflect.TypeOf(arr4)) // []int
@@ -247,7 +284,9 @@ func TestSlice1(t *testing.T) {
 	fmt.Println("len(slice1): ", len(slice1))
 	fmt.Println("cap(slice1): ", cap(slice1))
 
+	// 改变切片长度的过程称之为切片重组reslicing
 	for i := 0; i < cap(slice1); i++ {
+		// 底层的关联数组始终是同一个
 		slice1 = slice1[0 : i+1]
 		slice1[i] += 1
 
@@ -631,6 +670,7 @@ func (impl Implemen) cFn() []int {
 func TestInterfaceType(t *testing.T) {
 	imp := new(aa_imp)
 	var a aa = imp
+	// 注意，(aa_imp)之前的变量必须是接口类型才行，否则编译器会报错：invalid type assertion: varI.(T) (non-interface type (type of varI) on left)
 	if t, ok := a.(aa_imp); ok {
 		fmt.Println("if中，接口a运行时的类型为：", t)
 	} else {
@@ -689,6 +729,21 @@ func TestTypeSwitch(t *testing.T) {
 	case :
 	case :
 	}*/
+}
+
+//----------------------------------------------------------------------
+/**
+测试某个变量所属的类型是否实现了某个接口
+*/
+func TestInterface2(t *testing.T) {
+
+	imp := new(aa_imp)
+	var a aa = imp
+	if t, ok := a.(aa); ok {
+		fmt.Println("if中，接口a运行时的类型为：", t)
+	} else {
+		fmt.Println("类型没有匹配上") // 类型没有匹配上
+	}
 }
 
 //----------------------------------------------------------------------
